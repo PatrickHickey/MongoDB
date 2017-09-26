@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongojs = require('mongojs');
+const db = mongojs('catalog', ['products']);
 
 const app = express();
 
@@ -15,12 +16,24 @@ app.get('/', (req, res, next) => {
 
 // Fetch All Products
 app.get('/api/products', (req, res, next) => {
-  res.send('List Products');
+  db.products.find((err, docs) => {
+    if(err){
+      res.send(err);
+    }
+    console.log('Products found...');
+    res.json(docs);
+  });
 });
 
 // Fetch Single Product
 app.get('/api/products/:id', (req, res, next) => {
-  res.send('Fetch Product '+req.params.id);
+  db.products.findOne({_id: mongojs.ObjectId(req.params.id)}, (err, doc) => {
+    if(err){
+      res.send(err);
+    }
+    console.log('Product found...');
+    res.json(doc);
+  });
 });
 
 // Add Product
