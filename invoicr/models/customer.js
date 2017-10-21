@@ -35,7 +35,7 @@ const Customer = module.exports = mongoose.model('Customer', customerSchema);
 
 // Get Customers
 module.exports.getCustomers = (callback, limit) => {
-  Customer.find(callback).limit(limit).sort(['first_name', 'ascending']);
+  Customer.find(callback).limit(limit).sort([['first_name', 'ascending']]);
 }
 
 // Get Customer
@@ -44,7 +44,7 @@ module.exports.getCustomerById = (id, callback) => {
 }
 
 // Add Customer
-module.exports.addCustomer = (customer, calback) => {
+module.exports.addCustomer = (customer, callback) => {
   const add = {
 		first_name: customer.first_name,
 		last_name: customer.last_name,

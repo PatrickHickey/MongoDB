@@ -2,6 +2,10 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
+// Mongoose connect
+mongoose.connect('mongodb://localhost/invoicr');
+const db = mongoose.connection;
+
 // Init app
 const app = express();
 

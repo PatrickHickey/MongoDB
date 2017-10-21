@@ -27,19 +27,19 @@ const invoiceSchema = mongoose.Schema({
 const Invoice = module.exports = mongoose.model('Invoice', invoiceSchema);
 
 // Get Invoices
-module.exports.getInvoices = (calback, limit) => {
-  Invoice.find(callback).limit(limit).sort(['created_at', 'ascending']);
+module.exports.getInvoices = (callback, limit) => {
+  Invoice.find(callback).limit(limit).sort([['created_at', 'ascending']]);
 }
 
 // Get Invoice
-module.exports.getInvoiceById = (customer_id, calback, limit) => {
+module.exports.getInvoiceById = (customer_id, callback, limit) => {
   Invoice.findById(id, callback);
 }
 
 // Get Customer Invoices
-module.exports.getCustomerInvoices = (id, calback) => {
+module.exports.getCustomerInvoices = (customer_id, callback, limit) => {
   const query = {customer: customer_id};
-  Invoice.find(query, callback).limit(limit).sort(['created_at', 'ascending']);
+  Invoice.find(query, callback).limit(limit).sort([['created_at', 'ascending']]);
 }
 
 // Add Invoice
