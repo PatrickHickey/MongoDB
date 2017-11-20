@@ -1,47 +1,45 @@
-const mongo = require('mongodb').MongoClient;
-const client = require('socket.io').listen(3000).sockets;
+var mongo = require('mongodb').MongoClient;
+var client = require('socket.io').listen(3000).sockets;
 
-mongo.connect('mongodb://127.0.0.1/mongochat', (err, db) => {
-  if(err){
-    throw err;
-  }
-  console.log('Server Started & MongoDB Connected...');
-  client.on('connection', (socket) => {
-    let cha = db.collection('chats');
+mongo.connect('mongodb://127.0.0.1/mongochat', function(err, db){
+	if(err){
+		throw err
+	}
+	client.on('connection', function(socket){
+		var chat = db.collection('chats');
+		sendStatus = function(s){
+			socket.emit('status', s);
+		};
 
-    sendStatus = (s) => {
-      socket.emit('status', s);
-    }
+		chat.find().limit(100).sort({_id:1}).toArray(function(err, res){
+			if(err){
+				throw err
+			}
+			socket.emit('output', res);
+		});
 
-    chat.find().limit(100).sort({_id:1}).toArray((err, res) => {
-      if(err){
-        throw err;
-      }
-      socket.emit('output', res);
-    });
+		socket.on('input', function(data){
+			var name = data.name;
+			var message = data.message;
 
-    socket.on('input', (data) => {
-      const name = data.name;
-      const message = data.message;
+			if(name == '' || message == ''){
+				sendStatus('Please fill in name and message');
+			} else {
+				chat.insert({name: name, message: message}, function(){
+					client.emit('output', [data]);
 
-      if(name == '' || message == ''){
-        sendStatus('Please fill in the name and message');
-      } else {
-        chat.insert({name: name, message: message}, () => {
-          client.emit('output', [data]);
+					sendStatus({
+						message: 'Message Sent',
+						clear: true
+					});
+				});
+			}
+		});
 
-          sendStatus({
-            message: 'Message Sent',
-            clear: true
-          });
-        });
-      }
-    });
-
-    socket.on('clear', () => {
-      chat.remove({}, () => {
-        socket.emit('cleared');
-      });
-    });
-  });
+		socket.on('clear', function(data){
+			chat.remove({}, function(){
+				socket.emit('cleared');
+			});
+		});
+	});
 });
