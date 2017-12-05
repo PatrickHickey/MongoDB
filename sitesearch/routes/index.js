@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 Website = require('../models/website');
+Article = require('../models/article');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -23,8 +24,17 @@ router.post('/', function(req, res, next) {
       }
       res.render('website_results', model)
     });
-  } else if(searchType =='news'){
-
+  } else if(searchType =='article'){
+    Article.searchArticles(searchText, function(err, articles){
+      if(err){
+        console.log(err);
+        res.send(err);
+      }
+      var model = {
+        articles: articles.results
+      }
+      res.render('article_results', model)
+    });
   } else {
     res.send('Please choose a type');
   }
