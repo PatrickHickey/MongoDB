@@ -6,6 +6,12 @@
  */
 
 module.exports = {
-	
+	list: function(req, res){
+		Logs.find({}).exec(function(err, logs){
+			if(err){
+				res.send(500, {error: 'Database Error'});
+			}
+			res.view('list', {logs: logs});
+		});
+	}
 };
-
