@@ -21,7 +21,12 @@ setTimeout(function sunrise () {
       <a href="/logs/add">Add Log</a>
       <ul class="log-list">
         <% logs.forEach(function(log){ %>
-            <li><%= log.name %> - <%= log.text %> <small>[<%= log.createdAt %>]</small></li>
+            <li><%= log.name %> - <%= log.text %> <small>[<%= log.createdAt %>]</small>
+              <br><br>
+              <form method="post" action="/logs/delete/<%= log.id %>">
+                <input type="submit" value="Delete Log">
+              </form>
+            </li>
         <% }) %>
       </ul>
   </div>

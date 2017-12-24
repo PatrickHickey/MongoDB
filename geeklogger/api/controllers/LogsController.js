@@ -27,5 +27,14 @@ module.exports = {
  			}
  			res.redirect('/logs/list');
  		});
- 	}
+ 	},
+  delete: function(req, res){
+    Logs.destroy({id:req.params.id}).exec(function(err){
+      if(err){
+ 				res.send(500, {error: 'Database Error'});
+ 			}
+      res.redirect('/logs/list');
+    });
+    return false;
+  }
 };
